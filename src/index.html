@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -7,52 +8,165 @@
 	<link rel="stylesheet" href="./css/index.css">
 	<script type="text/javascript" src="./js/font_lct.js"></script>
 </head>
+
 <body>
-	<div class="main">
-		<img class="show-lucky-money" src="./images/get_money.png">
-		<div class="btn-click">
-			<div class="btn-receive btn-common">直接领取</div>
-			<div class="btn-continue btn-common">继续开</div>
-		</div>
-		<div class="lucky-money-list">
-			<div class="title">
-				<div>看看手气如何</div>
+	<div id="wrapper">
+		<div id="scroller">
+			<div id="pullDown">
+				<span class="pullDownIcon"></span><span class="pullDownLabel">下拉可以刷新</span>
 			</div>
-			<div class="item-wrapper">
-				<div class="item">
-					<span class="desc">红包-500</span>
-					<span class="value">+5000</span>
+
+			<div class="content">
+				<img class="show-lucky-money" src="./images/get_money.png">
+				<div class="btn-click">
+					<div class="btn-receive btn-common">直接领取</div>
+					<div class="btn-continue btn-common">继续开</div>
 				</div>
-				<div class="item">
-					<span class="desc">红包-500</span>
-					<span class="value">+5000</span>
-				</div>
-				<div class="item">
-					<span class="desc">红包-500</span>
-					<span class="value">+5000</span>
-				</div>
-				<div class="item">
-					<span class="desc">红包-500</span>
-					<span class="value">+5000</span>
-				</div>
-				<div class="item">
-					<span class="desc">红包-500</span>
-					<span class="value">+5000</span>
-				</div>
-				<div class="item">
-					<span class="desc">红包-500</span>
-					<span class="value">+5000</span>
+				<div class="lucky-money-list">
+					<div class="title">
+						<div>看看手气如何</div>
+					</div>
+					<div class="item-wrapper">
+						<!-- <div class="item">
+							<span class="desc">红包-500</span>
+							<span class="value">+5000</span>
+						</div>
+						<div class="item">
+							<span class="desc">红包-500</span>
+							<span class="value">+5000</span>
+						</div>
+						<div class="item">
+							<span class="desc">红包-500</span>
+							<span class="value">+5000</span>
+						</div>
+						<div class="item">
+							<span class="desc">红包-500</span>
+							<span class="value">+5000</span>
+						</div>
+						<div class="item">
+							<span class="desc">红包-500</span>
+							<span class="value">+5000</span>
+						</div>
+						<div class="item">
+							<span class="desc">红包-500</span>
+							<span class="value">+5000</span>
+						</div> -->
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<script>
-		window.onload = function() {
-			var clientHeight = document.body.clientHeight;
-			document.body.style.backgroundSize = '100% ' + clientHeight + 'px';
+	<script type="text/javascript" src="./js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="./js/iscroll.js"></script>
+
+	<script type="text/javascript">
+
+		var myScroll,
+			pullDownEl,
+			pullDownOffset,
+			limitStart = 0,
+			limitSize = 6,
+			isLastPage = false;
+
+		// 请求接口数据
+		function loadAction(isRefresh) {
+			$.ajax({
+		        type: "get",
+		        async: true,
+		        url: "http://115.236.185.181:9001/luckBonus!getOpenBonusBillingList.htm?callback=getOpenBonusBillingList_callback&userid=200222&bonusid=2575&pageno=1&pagesize=20&_=1503647049140&nsukey=gkA1Q3YAauBjnAZj0Dfl%2BKS58eZG5NyrrYKVx30RhqmOBlJzbpwW9a%2FJpjhmiWNavvUeSLE%2BeeJO9BaCu8Slko88nXQq0uVx1LasP%2B3yQm7b8iq2Tn%2B5g6CKlkYpycLi9mnPcgxczedeUlPhv0ez7CsIZe%2B7IqRnluUy%2F4SQkyX7sCkp57w2ZVW1kBZS%2FEy2",
+		        dataType: "jsonp",
+				jsonp: "callback",
+				jsonpCallback: "getOpenBonusBillingList_callback",
+		        success: function(data) {
+					$('.item-wrapper').empty();   //清空resText里面的所有内容
+					var html = ''; 
+					var dataList = data.info;
+					if (dataList) {
+						var pageData = dataList.slice(limitStart*limitSize, limitStart*limitSize + 6);
+						if(pageData.length < 6) { // 截取数据后小于6说明到最后一页了
+							isLastPage = true;
+						}
+						$.each(pageData, function(index, element){
+							html += '<div class="item">'
+										+ '<span class="desc">' + element.desc + ' ' + element.itemindex + '</span>'
+										+ '<span class="value">'+ element.value + '</span>'
+									+ '</div>';
+						});
+						$('.item-wrapper').html(html);
+					}
+					if (isRefresh) { // 下拉刷新需要刷新页面
+						myScroll.refresh(); //数据加载完成后，调用界面更新方法 
+					}    
+		        },
+		        error: function() {
+		            console.error('fail');
+		        }
+		    });
+		}
+
+		$(function() {
+			var isRefresh = false;
+			loadAction(isRefresh); // 第一次进入页面初始化数据
+		})
+
+		/**
+		 * 下拉刷新 （自定义实现此方法）
+		 * myScroll.refresh();      // 数据加载完成后，调用界面更新方法
+		 */
+		function pullDownAction() {
+			var isRefresh = true;
+			limitStart++;
+			if (!isLastPage) { // 没有到最后一页
+				loadAction(isRefresh);
+			} else { // 已经是最后一页了
+				myScroll.refresh(); //数据加载完成后，调用界面更新方法 
+			}
 		}
 		
+		/**
+		 * 初始化iScroll控件
+		 */
+		function loaded() {
+			pullDownEl = document.getElementById('pullDown');
+			pullDownOffset = pullDownEl.offsetHeight;
+
+			myScroll = new iScroll('wrapper', {
+				scrollbarClass: 'myScrollbar', /* 重要样式 */
+				useTransition: false, /* 此属性不知用意，本人从true改为false */
+				topOffset: pullDownOffset,
+				onRefresh: function () {
+					if (pullDownEl.className.match('loading')) {
+						pullDownEl.className = '';
+						pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉可以刷新';
+					}
+				},
+				onScrollMove: function () {
+					if (this.y > 5 && !pullDownEl.className.match('flip')) {
+						pullDownEl.className = 'flip';
+						pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始更新';
+						this.minScrollY = 0;
+					} else if (this.y < 5 && pullDownEl.className.match('flip')) {
+						pullDownEl.className = '';
+						pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉可以刷新';
+						this.minScrollY = -pullDownOffset;
+					}
+				},
+				onScrollEnd: function () {
+					if (pullDownEl.className.match('flip')) {
+						pullDownEl.className = 'loading';
+						pullDownEl.querySelector('.pullDownLabel').innerHTML = '正在刷新数据中...';
+						pullDownAction();   // Execute custom function (ajax call?)
+					}
+				}
+			});
+
+			setTimeout(function () { document.getElementById('wrapper').style.left = '0'; }, 800);
+		}
+
+		//初始化绑定iScroll控件 
+		document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+		document.addEventListener('DOMContentLoaded', loaded, false);
 
 	</script>
 	

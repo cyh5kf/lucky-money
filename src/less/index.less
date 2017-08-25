@@ -1,115 +1,184 @@
 @import "./common.less";
 
-@base: 20rem;
+@base: 20/750rem;
 
-body {
-    background: url("../images/bg.jpg") no-repeat;
-    background-size: cover;
-}
-
-.main {
+#wrapper {
     width: 100%;
     max-width: 640px;
-    padding-top: 247/750*@base;
-    padding-bottom: 80/750*@base;
+    position:absolute;
+    z-index:1;
+    top:0;
+    bottom:0;
+    left:0;
+    background:#aaa;
+    overflow:auto;
 
-    .show-lucky-money {
-        display: block;
-        width: 530/750*@base;
-        height: 495/750*@base;
-        margin: 0 auto;
+    #scroller {
+        position:relative;
+    /*  -webkit-touch-callout:none;*/
+        -webkit-tap-highlight-color:rgba(0,0,0,0);
+        float:left;
+        width:100%;
     }
+    .content {
+        background: url("../images/bg.jpg") no-repeat;
+        background-size: 100% 100%;
+        padding-bottom: 80*@base;
+        padding-top: 247*@base;
 
-    .btn-click {
-        margin-top: 15/750*@base;
-        display: flex;
-        justify-content: space-between;
-        padding: 0 30/750*@base 0;
-
-        .btn-common {
-            width: 310/750*@base;
-            height: 103/750*@base;
-            text-align: center;
-            font-size: 42/750*@base;
-            line-height: 103/750*@base;
-            border-radius: 30px;
+        .show-lucky-money {
+            display: block;
+            width: 530*@base;
+            height: 495*@base;
+            margin: 0 auto;
         }
-        .btn-receive {
-            color: #9e7101;
-            background-color: #fdd865;        
-        }
-        .btn-continue {
-            color: #fff;
-            background-color: #fe5427
-        }
-    }
-
-    .lucky-money-list {
-        width: 653/750*@base;
-        height: 600/750*@base;
-        margin: 40/750*@base auto 0;
-        background-color: #ffdc65;
-        border-radius: 10px;
-        padding: 32/750*@base;
-        position: relative;
-
-        .title {
-          position: absolute;
-          text-align: center;
-          width: 100%;
-          left: 0;
-
-            div {
-              font-size: 32/750*@base;
-              color: #583d00;
-              line-height: 20px;
+    
+        .btn-click {
+            margin-top: 15*@base;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30*@base 0;
+    
+            .btn-common {
+                width: 310*@base;
+                height: 103*@base;
+                text-align: center;
+                font-size: 42*@base;
+                line-height: 103*@base;
+                border-radius: 30px;
             }
-            /*CSS伪类用法*/
-            div:after, div:before {
-              background: #edbe3d;
-              content: "";
-              height: 1px;
+            .btn-receive {
+                color: #9e7101;
+                background-color: #fdd865;        
+            }
+            .btn-continue {
+                color: #fff;
+                background-color: #fe5427
+            }
+        }
+    
+        .lucky-money-list {
+            width: 560*@base;
+            height: 580*@base;
+            margin: 40*@base auto 0;
+            background-color: #ffdc65;
+            border-radius: 10px;
+            padding: 32*@base 32*@base 0;
+            position: relative;
+    
+            .title {
               position: absolute;
-              top: 50%;
-              width: 28%;
+              text-align: center;
+              width: 100%;
+              left: 0;
+    
+                div {
+                  font-size: 32*@base;
+                  color: #583d00;
+                  line-height: 20px;
+                }
+                /*CSS伪类用法*/
+                div:after, div:before {
+                  background: #edbe3d;
+                  content: "";
+                  height: 1px;
+                  position: absolute;
+                  top: 50%;
+                  width: 28%;
+                }
+    
+                /*调整背景横线的左右距离*/
+                div:before {
+                  left: 30*@base;
+                }
+    
+                div:after {
+                  right: 30*@base;
+                }
             }
-
-            /*调整背景横线的左右距离*/
-            div:before {
-              left: 30/750*@base;
+    
+            .item-wrapper {
+                padding-top: 20px;
+                .item {
+                    width: 100%;
+                    height: 88*@base;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid #edbe3d;
+                    font-size: 24*@base;
+    
+                    &:last-child {
+                        border-bottom: none;
+                    }
+    
+                    .desc {
+                        color: #815900;
+                    }
+    
+                    .value {
+                        color: #ed093b;
+                    }
+                }
+    
             }
-
-            div:after {
-              right: 30/750*@base;
-            }
+    
         }
-
-        .item-wrapper {
-            padding-top: 20px;
-            .item {
-                width: 100%;
-                height: 88/750*@base;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 1px solid #edbe3d;
-                font-size: 24/750*@base;
-
-                &:last-child {
-                    border-bottom: none;
-                }
-
-                .desc {
-                    color: #815900;
-                }
-
-                .value {
-                    color: #ed093b;
-                }
-            }
-
-        }
-
     }
+
 }
 
+
+/**
+*
+* 下拉样式 Pull down styles
+*
+*/
+#pullDown {
+    background:#fff;
+    height:40px;
+    line-height:40px;
+    padding:5px 10px;
+    border-bottom:1px solid #ccc;
+    font-weight:bold;
+    font-size:14px;
+    color:#888;
+}
+#pullDown .pullDownIcon  {
+    display:block; float:left;
+    width:40px; height:40px;
+    background:url(../images/pull-icon-2x.png) 0 0 no-repeat;
+    -webkit-background-size:40px 80px; background-size:40px 80px;
+    -webkit-transition-property:-webkit-transform;
+    -webkit-transition-duration:250ms;  
+}
+#pullDown .pullDownIcon {
+    -webkit-transform:rotate(0deg) translateZ(0);
+}
+
+/**
+    * 动画效果css3代码
+    */
+#pullDown.flip .pullDownIcon {
+    -webkit-transform:rotate(-180deg) translateZ(0);
+}
+
+#pullDown.loading .pullDownIcon {
+    background-position:0 100%;
+    -webkit-transform:rotate(0deg) translateZ(0);
+    -webkit-transition-duration:0ms;
+
+    -webkit-animation-name:loading;
+    -webkit-animation-duration:2s;
+    -webkit-animation-iteration-count:infinite;
+    -webkit-animation-timing-function:linear;
+}
+
+@-webkit-keyframes loading {
+    from {
+         -webkit-transform:rotate(0deg) translateZ(0);
+    }
+    to {
+         -webkit-transform:rotate(360deg) translateZ(0); 
+    }
+}

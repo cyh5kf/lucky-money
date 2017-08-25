@@ -86,7 +86,7 @@ gulp.task('clean', function(){
 //编译压缩less
 gulp.task('build-less',function(){
     //1.找到less文件
-    return gulp.src('src/less/**.less')
+    return gulp.src('src/less/index.less')
     //2.编译为css
     .pipe(less())
     //压缩css
@@ -101,22 +101,20 @@ gulp.task('build-copyjs',  function() {
     .pipe(gulp.dest('dist/js'))
 });
 
-//压缩js文件
-gulp.task('build-jsmin',function(){
-    return gulp.src('src/js/index.js')
-    .pipe(uglify())
-    .pipe(gulp.dest('dist/js'))
-});
-
 //压缩html文件, Html替换css、js文件版本
 gulp.task('build-htmlmin',function(){
-    return gulp.src('src/views/index.html')
-    .pipe(htmlmin({collapseWhitespace: true, removeComments: true})) //设置是够压缩html文件 true
+    return gulp.src('src/index.html')
+    .pipe(htmlmin({
+        removeComments: true,  //清除HTML注释
+        collapseWhitespace: true,  //压缩HTML
+        minifyJS: true,  //压缩页面JS
+        minifyCSS: true  //压缩页面CSS
+    })) //设置是否压缩html文件 true
     .pipe(versionNumber(versionConfig))
     .pipe(gulp.dest('dist'))
 });
 
 //生产环境构建
 gulp.task('build',  ['clean'], function() {
-    gulp.start('build-less', 'build-copyjs', 'copyImage', 'build-jsmin', 'build-htmlmin')
+    gulp.start('build-less', 'build-copyjs', 'copyImage', 'build-htmlmin')
 })
