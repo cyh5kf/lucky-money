@@ -1,7 +1,7 @@
 # lucky-money
 移动端页面布局，less，下拉刷新功能，gulp
 
-启动项目
+安装模块
 ```
 npm install
 ```
